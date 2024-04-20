@@ -28,9 +28,28 @@
                     beginButton.removeFrom();
                     S.update();
 
-                    const infoLabel = new Label({text: "Hit it when the light is red!", color: white}).pos(0,50,CENTER,TOP);
+                    timeout(.5,()=>{
+                        const ready = new Label({text: "Ready?", color: white}).pos(0,80,CENTER,TOP);
+                        S.update();
 
-                    csbg.play({volume:1, loop:true});
+                        timeout(1.5,()=>{
+                            ready.removeFrom();
+                            const infoLabel = new LabelLetters(new Label({text: "Hit it when the light is red!", color: white}), CENTER, "bottom", 5)
+                            .pos(0,80,CENTER,TOP)
+                            .animate({
+                                props:{scale:1.5, rotation:10},
+                                wait:.5,
+                                time:.2,
+                                sequence:.05,
+                                rewind:true,
+                                loopWait:5
+                            });
+                            S.update();
+                        });
+
+                    });
+           
+                    csbg.play({volume:.7, loop:true});
 
                     guitarPlay = csguitar.play({volume:0, loop:true});
                     drumPlay = csdrum.play({volume:0, loop:true});

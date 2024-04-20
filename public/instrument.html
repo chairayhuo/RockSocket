@@ -95,14 +95,16 @@
                 // showDrum();
 
                 // Guitar function //
-
                 function showGuitar(){
                     
                     const guitarbg = new Pic("guitarbg.png").sca(1).centerReg().pos(0,0,CENTER,CENTER);
 
                     const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
                     const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
-
+                    const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                        () => window.location.reload()
+                    );
+                    
                     playLeft.tap(() => {
 
                         socket.emit('guitarLeft');
@@ -129,13 +131,15 @@
                 } 
 
                 // Keyboard function //
-
                 function showKeyboard(){
                     
                     const keyboardbg = new Pic("keyboardbg.png").sca(1).centerReg().pos(0,0,CENTER,CENTER);
 
                     const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
                     const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
+                    const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                        () => window.location.reload()
+                    );
 
                     playLeft.tap(() => {
 
@@ -163,20 +167,22 @@
                 }
 
                 // drum function //
-
                 function showDrum(){
 
-                    const drumbg = new Pic("drumbg.png").sca(0.8).centerReg().pos(0,100,CENTER,CENTER);
+                    const drumbg = new Pic("drumbg.png").centerReg();
 
                     const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
                     const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
+                    const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                        () => window.location.reload()
+                    );
 
                     playLeft.tap(() => {
 
                         socket.emit('drumLeft');
 
                         drumbg.animate({
-                            props:{scale:1.2},
+                            props:{scale:1.5},
                             time:.5,
                             rewind:true,
                         })
@@ -188,7 +194,7 @@
                         socket.emit('drumRight');
 
                         drumbg.animate({
-                            props:{scale:1.2},
+                            props:{scale:1.5},
                             time:.5,
                             rewind:true,
                         })
