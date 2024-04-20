@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Live</title>
+        <script type="module">
+            import zim from "https://zimjs.org/cdn/015/zim_game";
+            const assets = [
+                "live.png","drumer.png", 
+                "https://fonts.googleapis.com/css2?family=Salsa", 
+                "cs_all.mp3", "cs_bg.mp3"
+            ];
+            const path = "assets/";
+            new Frame(FIT, 1024, 768, dark, darker, ready, assets, path);
+            function ready() {
+                // Given F, S, W, H or frame, stage, stageW, stageH   
+
+                STYLE = {
+                    font:"Salsa"
+                }
+                const concert = new Pic("live.png").sca(0.9).alp(1).center();
+                const csbg = new Aud("cs_bg.mp3");
+
+                const beginLabel = new Label({text: "Let the rock'n'roll begin!", color: white}).pos(0,50,CENTER,TOP);
+                const beginButton = new Button({label:"PLAY",backgroundColor:"#F25430"}).pos(0,100,CENTER,TOP).tap(()=>{
+                    
+                    beginLabel.removeFrom();
+                    beginButton.removeFrom();
+                    S.update();
+
+                    const infoLabel = new Label({text: "Hit it when the light is red!", color: white}).pos(0,50,CENTER,TOP);
+
+                    csbg.play({volume:1, loop:true});
+
+                    guitarPlay = csguitar.play({volume:0, loop:true});
+                    drumPlay = csdrum.play({volume:0, loop:true});
+                    keyboardPlay = cskeyboard.play({volume:0, loop:true});
+
+                    timeout(5,()=>{
+                        guitarIndicator();
+                        drumIndicator();
+                        keyboardIndicator();
+                    });
+
+                });
+
+                // drum function //
+                const drumer = new Pic("drumer.png").sca(0.5).alp(1).centerReg().pos(0,20,CENTER,BOTTOM);
+
+                const csdrum = new Aud("cs_drum.mp3");
+                let drumPlay;
+                
+                const drumerLeft = new Circle(40, "white").centerReg().pos(-50,200,CENTER,TOP);
+                const drumerRight = new Circle(40, "white").centerReg().pos(50,200,CENTER,TOP);
+
+                function drumIndicator(){
+
+                    function changeCircleColor() {
+                        const circle = pluck([drumerLeft, drumerRight]);
+                        circle.color = "red";
+                        S.update(); 
+
+                        timeout(1,()=>{
+                            circle.color = "white";
+                            S.update(); 
+                        });
+                    }
+
+                    interval({
+                        time: 3,
+                        immediate:true,
+                        call: changeCircleColor
+                    });
+                }              
+
+                let drumTimeout;
+                function drumVolume() {
+                    drumPlay.volume = 1; 
+                    console.log("Drum volume is set to 1");
+
+                    clearTimeout(drumTimeout); 
+                    drumTimeout = setTimeout(() => {
+                        drumPlay.volume = 0; 
+                        console.log("Drum volume is set to 0");
+                    }, 5000); 
+                }
+
+                socket.on('drumLeft', () => {
+                    if (drumerLeft.color === "red") {
+                        drumer.animate({
+                            props:{scale:0.6},
+                            time:.5,
+                            rewind:true,
+                        });
+                        drumVolume();
+                        zog("drumLeft");
+                    }
+                });
+
+                socket.on('drumRight', () => {
+                    if (drumerRight.color === "red") {
+                        drumer.animate({
+                            props:{scale:0.6},
+                            time:.5,
+                            rewind:true,
+                        });
+                        drumVolume();                     
+                        zog("drumRight");                  
+                    }
+                });
+
+                // keyboard function //
+                const keyboarder = new Pic("keyboarder.png").sca(0.35).alp(1).centerReg().pos(0,20,LEFT,BOTTOM);
+
+                const cskeyboard = new Aud("cs_keyboard.mp3");
+                let keyboardPlay;
+                
+                const keyboarderLeft = new Circle(40, "white").centerReg().pos(70,200,LEFT,TOP);
+                const keyboarderRight = new Circle(40, "white").centerReg().pos(170,200,LEFT,TOP);
+
+                function keyboardIndicator(){
+
+                    function changeCircleColor() {
+                        const circle = pluck([keyboarderLeft, keyboarderRight]);
+                        circle.color = "red";
+                        S.update(); 
+
+                        timeout(1,()=>{
+                            circle.color = "white";
+                            S.update(); 
+                        });
+                    }
+
+                    interval({
+                        time: 3,
+                        immediate:true,
+                        call: changeCircleColor
+                    });
+                }              
+
+                let keyboardTimeout;
+                function keyboardVolume() {
+                    keyboardPlay.volume = 1; 
+                    console.log("Keyboard volume is set to 1");
+
+                    clearTimeout(keyboardTimeout); 
+                    keyboardTimeout = setTimeout(() => {
+                        keyboardPlay.volume = 0; 
+                        console.log("Keyboard volume is set to 0");
+                    }, 5000); 
+                }
+
+                socket.on('keyboardLeft', () => {
+                    if (keyboarderLeft.color === "red") {
+                        keyboarder.animate({
+                            props:{scale:0.4},
+                            time:.5,
+                            rewind:true,
+                        });
+                        keyboardVolume();
+                        zog("keyboardLeft");
+                    }
+                });
+
+                socket.on('keyboardRight', () => {
+                    if (keyboarderRight.color === "red") {
+                        keyboarder.animate({
+                            props:{scale:0.4},
+                            time:.5,
+                            rewind:true,
+                        });
+                        keyboardVolume();                     
+                        zog("keyboardRight");                  
+                    }
+                });
+
+                // Guitar function //
+                const guitarist = new Pic("guitarist.png").sca(0.42).alp(1).centerReg().pos(-50,-15,RIGHT,BOTTOM);
+
+                const csguitar = new Aud("cs_guitar.mp3");
+                let guitarPlay;
+
+                const guitaristLeft = new Circle(40, "white").centerReg().pos(150,200,RIGHT,TOP);
+                const guitaristRight = new Circle(40, "white").centerReg().pos(50,200,RIGHT,TOP);
+
+                function guitarIndicator(){
+
+                    function changeCircleColor() {
+                        const circle = pluck([guitaristLeft, guitaristRight]);
+                        circle.color = "red";
+                        S.update(); 
+
+                        timeout(1,()=>{
+                            circle.color = "white";
+                            S.update(); 
+                        });
+                    }
+
+                    interval({
+                        time: 3,
+                        immediate:true,
+                        call: changeCircleColor
+                    });
+                }              
+
+                let guitarTimeout;
+                function guitarVolume() {
+                    guitarPlay.volume = 1; 
+                    console.log("Guitar volume is set to 1");
+
+                    clearTimeout(guitarTimeout); 
+                    guitarTimeout = setTimeout(() => {
+                        guitarPlay.volume = 0; 
+                        console.log("Guitar volume is set to 0");
+                    }, 5000); 
+                }
+
+                socket.on('guitarLeft', () => {
+                    if (guitaristLeft.color === "red") {
+                        guitarist.animate({
+                            props:{scale:0.55},
+                            time:.5,
+                            rewind:true,
+                        });
+                        guitarVolume();
+                        zog("guitarLeft");
+                    }
+                });
+
+                socket.on('guitarRight', () => {
+                    if (guitaristRight.color === "red") {
+                        guitarist.animate({
+                            props:{scale:0.55},
+                            time:.5,
+                            rewind:true,
+                        });
+                        guitarVolume();                     
+                        zog("guitarRight");                  
+                    }
+                });
+
+                
+ 
+            } // end ready
+
+        </script>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+    </head>
+    <body>
+
+        <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+    </script>
+    </body>
+</html>
