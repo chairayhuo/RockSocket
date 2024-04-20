@@ -30,16 +30,14 @@
                 }
 
                 function updateInstrumentButtons(instrumentSelections) {
-                    // 假设instrumentSelections是这样的对象 { GUITAR: 'someUserId', KEYBOARD: null, DRUM: 'anotherUserId' }
-                    // 其中null表示没有被选中，非null（比如用户ID）表示被某个用户选中
+
                     button1.enabled = !instrumentSelections.GUITAR;
                     button2.enabled = !instrumentSelections.KEYBOARD;
                     button3.enabled = !instrumentSelections.DRUM;
 
-                    // 更新按钮样式以反映其是否被禁用
                     [button1, button2, button3].forEach(button => {
-                        button.backgroundColor = button.enabled ? "#260120" : "#CCCCCC"; // 禁用时变灰
-                        S.update(); // 请确保调用update()来刷新按钮的外观
+                        button.backgroundColor = button.enabled ? "#260120" : "#CCCCCC"; 
+                        S.update(); 
                     });
                 }
 
@@ -47,7 +45,6 @@
                     console.log('Received instrument status:', instrumentSelections);
                     updateInstrumentButtons(instrumentSelections);
                 });
-                // 请注意，你需要确保服务器通过instrumentStatus事件发送了正确的乐器选择状态对象，格式类似于{ GUITAR: 'someUserId', KEYBOARD: null, DRUM: 'anotherUserId' }，其中null表示没有用户选择该乐器，而非null值（例如用户ID或某个标识符）表示该乐器已被选择。
 
                 button1.tap(() => {
                     selectInstrument('GUITAR');
@@ -89,10 +86,6 @@
                     showDrum();
 
                 });
-
-                // showGuitar();
-                // showKeyboard();
-                // showDrum();
 
                 // Guitar function //
                 function showGuitar(){
@@ -200,9 +193,7 @@
                         })
 
                     });
-                }      
-
-  
+                }       
             } // end ready
 
         </script>

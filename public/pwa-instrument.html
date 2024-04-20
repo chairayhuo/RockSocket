@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Instrument PWA</title>
+
+        <link rel="manifest" href="manifest.json">
+
+        <meta name="apple-mobile-web-app-title" content="ROCK!!!">
+        <meta name="theme-color" content="#333333">
+        <meta name="msapplication-TileColor" content="#333333">
+
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <link rel="apple-touch-icon" href="icons/icon_152.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="msapplication-TileImage" content="icons/icon_144.png">
+
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="msapplication-starturl" content="./">
+
+        <script>
+            window.addEventListener("DOMContentLoaded", function () {
+                if (location.protocol === "https:" && "serviceWorker" in navigator) navigator.serviceWorker.register("./serviceworker.js");
+            });
+        </script>
+
+        <script src="libraries/createjs.js"></script>
+        <script src="libraries/game.js"></script>
+
+        <script type="module">
+            import zim from "https://zimjs.org/cdn/015/zim_game";
+            const assets = [
+				"selectbg.png", "drumbg.png", "guitarbg.png",
+                "https://fonts.googleapis.com/css2?family=Salsa"
+			];
+            const path = "assets/";
+            new Frame(FIT, 430, 932, dark, darker, ready, assets, path);
+            function ready() {
+
+                new PWA(runZapp);
+                
+                function runZapp() {
+                    // Given F, S, W, H or frame, stage, stageW, stageH   
+                    // 创建状态标签
+
+                    STYLE = {
+                        font:"Salsa"
+                    }
+
+                    const selectbg = new Pic("selectbg.png").sca(0.8).alp(1).pos(0,0,CENTER,CENTER);
+
+                    const button1 = new Button({label:"GUITAR",backgroundColor:"#260120"}).pos(0,100,CENTER,TOP);
+                    const button2 = new Button({label:"KEYBOARD",backgroundColor:"#260120"}).pos(0,200,CENTER,TOP);
+                    const button3 = new Button({label:"DRUM",backgroundColor:"#260120"}).pos(0,300,CENTER,TOP);
+
+                    function selectInstrument(instrument) {
+                        console.log(`Selecting instrument: ${instrument}`);
+                        socket.emit('selectInstrument', instrument);
+                    }
+
+                    function updateInstrumentButtons(instrumentSelections) {
+                    
+                        button1.enabled = !instrumentSelections.GUITAR;
+                        button2.enabled = !instrumentSelections.KEYBOARD;
+                        button3.enabled = !instrumentSelections.DRUM;
+
+                        [button1, button2, button3].forEach(button => {
+                            button.backgroundColor = button.enabled ? "#260120" : "#CCCCCC"; // 禁用时变灰
+                            S.update(); 
+                        });
+                    }
+
+                    socket.on('instrumentStatus', (instrumentSelections) => {
+                        console.log('Received instrument status:', instrumentSelections);
+                        updateInstrumentButtons(instrumentSelections);
+                    });
+
+                    button1.tap(() => {
+                        selectInstrument('GUITAR');
+                        zog('guitar');
+
+                        selectbg.removeFrom();
+                        button1.removeFrom();
+                        button2.removeFrom();
+                        button3.removeFrom();
+                        S.update();
+
+                        showGuitar();
+                    });
+
+                    button2.tap(() => {
+                        selectInstrument('KEYBOARD');
+                        zog('KEYBOARD');
+
+                        selectbg.removeFrom();
+                        button1.removeFrom();
+                        button2.removeFrom();
+                        button3.removeFrom();
+                        S.update();
+
+                        showKeyboard();
+                    });
+                
+                    button3.tap(() => {
+
+                        selectInstrument('DRUM');
+                        zog('drum');
+
+                        selectbg.removeFrom();
+                        button1.removeFrom();
+                        button2.removeFrom();
+                        button3.removeFrom();
+                        S.update();
+
+                        showDrum();
+
+                    });
+
+                    // Guitar function //
+                    function showGuitar(){
+                        
+                        const guitarbg = new Pic("guitarbg.png").sca(1).centerReg().pos(0,0,CENTER,CENTER);
+
+                        const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
+                        const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
+                        const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                            () => window.location.reload()
+                        );
+                        
+                        playLeft.tap(() => {
+
+                            socket.emit('guitarLeft');
+
+                            guitarbg.animate({
+                                props:{scale:1.4},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+
+                        playRight.tap(() => {
+
+                            socket.emit('guitarRight');
+
+                            guitarbg.animate({
+                                props:{scale:1.4},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+                    } 
+
+                    // Keyboard function //
+                    function showKeyboard(){
+                        
+                        const keyboardbg = new Pic("keyboardbg.png").sca(1).centerReg().pos(0,0,CENTER,CENTER);
+
+                        const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
+                        const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
+                        const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                            () => window.location.reload()
+                        );
+
+                        playLeft.tap(() => {
+
+                            socket.emit('keyboardLeft');
+
+                            keyboardbg.animate({
+                                props:{scale:1.4},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+
+                        playRight.tap(() => {
+
+                            socket.emit('keyboardRight');
+
+                            keyboardbg.animate({
+                                props:{scale:1.4},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+                    }
+
+                    // drum function //
+                    function showDrum(){
+
+                        const drumbg = new Pic("drumbg.png").centerReg();
+
+                        const playLeft = new Button({label:"LEFT", width:180, height:300, backgroundColor:"#260120"}).pos(-100,80,CENTER,TOP);
+                        const playRight = new Button({label:"RIGHT", width:180, height:300, backgroundColor:"#260120"}).pos(100,80,CENTER,TOP);
+                        const back = new Button({label:new Emoji("\ud83d\udd19"), width:40, height:40, backgroundColor:"white"}).pos(20,20,LEFT,TOP).tap(
+                            () => window.location.reload()
+                        );
+
+                        playLeft.tap(() => {
+
+                            socket.emit('drumLeft');
+
+                            drumbg.animate({
+                                props:{scale:1.5},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+
+                        playRight.tap(() => {
+
+                            socket.emit('drumRight');
+
+                            drumbg.animate({
+                                props:{scale:1.5},
+                                time:.5,
+                                rewind:true,
+                            })
+
+                        });
+                    } 
+        
+                } // end runZapp
+
+            } // end ready
+
+        </script>
+        
+    </head>
+    <body>
+        <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+    </script>
+    </body>
+</html>
