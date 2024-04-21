@@ -6,7 +6,7 @@
 var cacheName = 'zim_pwa_ROCK!!!';
 var filesToCache = [
   './',
-  'pwa-instrument.html',
+  'index.html',
   // './libraries/zim_min.js',
   './libraries/createjs.js',
   // './libraries/game.js',
