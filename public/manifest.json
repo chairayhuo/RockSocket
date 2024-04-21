@@ -1,6 +1,6 @@
 {
   "name": "ROCKband",
-  "short_name": "ROCK",
+  "short_name": "ROCKband",
   "lang": "en-US",
   "start_url": "./index.html",
   "display": "standalone",
